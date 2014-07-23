@@ -49,7 +49,7 @@ func ServeTemplate(w http.ResponseWriter, r *http.Request) {
 
   // Return a 404 is the request is for a directory
   if info.IsDir() {
-    http.NotFound(w,r)
+    http.NotFound(w, sr)
     return
   }
 
