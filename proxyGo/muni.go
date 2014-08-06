@@ -10,15 +10,17 @@ import (
 
 type RealTime struct {
 	//RTT xml.Name `xml:"RTT"`
-	AgencyList []Agency `xml:"Agency"`
+	AgencyList Agency `xml:"AgencyList>Agency"`
 }
 
 type Agency struct {
-	Name string `xml:"Name,attr"`
+	Name      string  `xml:"Name,attr"`
+	Mode      string  `xml:"Mode,attr"`
+	RouteList []Route `xml:"RouteList>Route"`
 }
 
 type Route struct {
-	RouteDirectionList string `xml:"RouteDirectionList"`
+	Name string `xml:"Name,attr"`
 }
 
 type DepartureTime struct {
@@ -36,13 +38,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(string(body))
+	//fmt.Println(string(body))
 	var f RealTime
 	err = xml.Unmarshal(body, &f)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(f)
-	fmt.Println(MUNI_TOKEN)
 
 }
