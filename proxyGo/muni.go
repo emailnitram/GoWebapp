@@ -42,7 +42,8 @@ type DepartureTime struct {
 }
 
 func main() {
-	http.HandleFunc("/muni", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/inboundN", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		MUNI_TOKEN := os.Getenv("MUNI_TOKEN")
 		resp, err := http.Get("http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=" + MUNI_TOKEN + "&stopcode=13915")
 		if err != nil {
@@ -53,7 +54,6 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		//fmt.Println(string(body))
 		var f RealTime
 		err = xml.Unmarshal(body, &f)
 		if err != nil {
