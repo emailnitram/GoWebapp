@@ -4,7 +4,7 @@ import "fmt"
 
 func main() {
 	firstReverse("My name is Martin")
-	firstReverse("Today is Sunday")
+	firstReverse("Today is Friday!")
 }
 
 func firstReverse(s string) {
