@@ -41,10 +41,16 @@ type DepartureTime struct {
 	DepartureTime []string `xml:"DepartureTime"`
 }
 
+type MuniJson struct {
+	StopName       string
+	Direction      string
+	DepartureTimes []string
+}
+
 func main() {
+	MUNI_TOKEN := os.Getenv("MUNI_TOKEN")
 	http.HandleFunc("/outboundN", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-		MUNI_TOKEN := os.Getenv("MUNI_TOKEN")
 		resp, err := http.Get("http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=" + MUNI_TOKEN + "&stopcode=16994")
 		if err != nil {
 			panic(err)
@@ -60,9 +66,17 @@ func main() {
 			panic(err)
 		}
 		fmt.Println(f)
+		var muniOut MuniJson
+		muniOut.StopName = f.AgencyList.RouteList[0].RouteDirection.StopList.Name
+		for _, i := range f.AgencyList.RouteList {
+			if i.Name == "N-Judah" {
+				muniOut.Direction = i.RouteDirection.Name
+				muniOut.DepartureTimes = i.RouteDirection.StopList.DepartureTimeList.DepartureTime
+			}
+		}
 
 		w.Header().Set("Content-Type", "application/json")
-		b, err := json.Marshal(f)
+		b, err := json.Marshal(muniOut)
 		if err != nil {
 			panic(err)
 		}
@@ -71,7 +85,6 @@ func main() {
 
 	http.HandleFunc("/inboundN", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-		MUNI_TOKEN := os.Getenv("MUNI_TOKEN")
 		resp, err := http.Get("http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=" + MUNI_TOKEN + "&stopcode=13915")
 		if err != nil {
 			panic(err)
@@ -87,9 +100,17 @@ func main() {
 			panic(err)
 		}
 		fmt.Println(f)
+		var muniIn MuniJson
+		muniIn.StopName = f.AgencyList.RouteList[0].RouteDirection.StopList.Name
+		for _, i := range f.AgencyList.RouteList {
+			if i.Name == "N-Judah" {
+				muniIn.Direction = i.RouteDirection.Name
+				muniIn.DepartureTimes = i.RouteDirection.StopList.DepartureTimeList.DepartureTime
+			}
+		}
 
 		w.Header().Set("Content-Type", "application/json")
-		b, err := json.Marshal(f)
+		b, err := json.Marshal(muniIn)
 		if err != nil {
 			panic(err)
 		}
