@@ -5,6 +5,7 @@ import "fmt"
 func main() {
 	firstReverse("My name is Martin")
 	firstReverse("Today is Friday!")
+	firstReverse("Foggy Summer in SF")
 }
 
 func firstReverse(s string) {
